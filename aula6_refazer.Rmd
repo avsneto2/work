@@ -25,4 +25,12 @@ library(robotstxt)
 library(knitr)
 ```
 
+### teste 
+```{r importando bibliotecas, echo=TRUE}
+library(tidyverse)
+library(rvest)
+library(data.table)
+library(robotstxt)
+library(knitr)
+```
 

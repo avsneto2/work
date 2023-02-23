@@ -1,0 +1,43 @@
+---
+title: "Trabalho_GLPI"
+author: "Vieira"
+output: html_document
+date: "2023-02-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setar diretório de trabalho
+
+```{r setando area de trabalho, echo=TRUE}
+
+setwd("E:/DADOS/VIEIRA/POS GRADUACAO/INFINET/CURSO/WORK")
+getwd()
+```
+
+## Carregar bibliotecas
+
+```{r importando bibliotecas, echo=TRUE}
+library(tidyverse)
+library(rvest)
+library(data.table)
+library(robotstxt)
+library(knitr)
+```
+
+## Importar tabela
+
+```{r importando tabela de trabalho, echo=TRUE}
+
+tab_GLPI <- read.csv('E:/DADOS/VIEIRA/POS GRADUACAO/INFINET/CURSO/WORK/BASES/TAB_GLPI.csv', sep = ";")
+
+```
+
+## salvando imagem da area de trabalho 
+```{r salvando imagem, echo=TRUE}
+save.image("IMG_GLPI")
+
+```
+
