@@ -1,0 +1,125 @@
+---
+title: "Projeto da Pós Graduação, disciplina Estatística para Cientista de Dados."
+author: "Antonio Vieira dos Santos Neto - Cpf 077.523.948-82"
+date: "2023-02-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk $ set(echo = TRUE)
+```
+
+## Introdução
+
+O presente projeto visa demonstrar os conhecimentos nos fundamentos básicos na utilização da linguagem "R", bem como, nos conhecimentos de Estatística.
+
+Neste documento, segue o passo a passo, onde são demonstrados os conhecimentos adquiridos na disciplina.
+
+## Objetivo do Projeto
+
+Demonstrar os conhecimentos adquiridos na disciplina "Estatística para Cientista de Dados", sendo que , através do uso da Linguagem "R", serão feitas diversas análises em uma "Base de evolução de registro de ocorrências do Instituto de Segurança Pública do Rio de Janeiro".
+
+## Preparando o ambiente de análise
+
+Para a criação do ambiente de trabalho foram adotados os seguinte passos :
+
+1-Instalação da linguagem "R" na máquina do aluno. 2-Instalação do Studio "R" na máquina do aluno. 3-Instalação do "GIT" na máquina do aluno. Esta aplicação permite o controle dos versionamentos dos aplicações desenvolvidas. 4-Configuração na nuvem do "GITHUB, criando um repositório"WORK", para arquivo das aplicações desenvolvidas, bem como, controle do versionamento destas.
+
+-   Atenção : As evidências da configuração do ambiente, segue no documento "PROJETO_ESTATISTICA.PDF"
+
+#### Importando bilbiotecas necessárias ao desenvolvimento.
+
+Para suporte no tratamento da base de dados, foram instaladas as bibliotecas a seguir a partir do comando "install.packages".
+
+-   install.packages("tidyverse") - Pacote de ferramentas que tem por objetivo manipulação, exploração e visualização de dados.
+
+-   install.packages("wesanderson") - *** ATENCAO 
+
+-   install.packages("data.table") - Pacote que também tem a função de manipular dados, porém, em algumas situações, permite o tratamento de dados com maior velocidade
+
+-   install.packages("rvest") - Uma das funções do Pacote "rvest" e permitir a leitura de dados a partir de código html, dessa forma o "R" poderá mapear e navegar pela arvore do html.
+
+-   install.packages("robotstxt") - Este pacote fornece funcoes para baixar e analisar arquivos 'robots.txt'.
+
+-   install.packages("knitr") - Este pacote tem a funcao de gerar relatorios dinamicos com R.
+
+```{r importando bibliotecas, echo=TRUE}
+library(tidyverse)
+library(wesanderson)
+library(rvest)
+library(data.table)
+library(robotstxt)
+library(knitr)
+```
+
+#### Definindo o diretório de trabalho para o projeto
+
+Posteriomente, vamos trocar o diretório de referência para o trabalho, mas não vamos deixar essa informação pública para o usuário.
+
+```{r mudando o diretório, echo=FALSE}
+setwd("E:/DADOS/VIEIRA/POS GRADUACAO/INFINET/CURSO/WORK_Trabalho/work")
+getwd()
+```
+
+#### Importando dados
+
+A partir da definição do ambiente, o arquivo "BaseDPEvolucaoMensalCisp.csv", contendo a base de evolução de registro de ocorrencias do Instituto de Segurança Publica do Rio de Janeiro, será importado utilizando a biblioteca rvest, para ler o arquivo "CSV.
+
+```{r importando os dados, echo=TRUE}
+Bevolucao.tbl <- readr::read_csv2("BaseDPEvolucaoMensalCisp.csv")
+kable(head(Bevolucao.tbl))
+```
+
+#### Selecionando dados
+
+#### ATENCAO : NO DOCUMENTO WORD, MOSTRAR EVIDÊNCIAS DOS ARQUIVOS TRATADOS
+
+Uma vez que os dados foram importados, faremos a seleção das colunas importantes para a análise. Dessa forma, serão selecionados os dados referentes as ocorrencias relacionadas ao Roubo.
+
+```{r selecionando variáveis, echo = TRUE}
+
+Bevolucao.roubos.tbl <- Bevolucao.tbl %>% dplyr::select(CISP:Regiao,roubo_transeunte,roubo_celular,roubo_em_coletivo,roubo_rua,roubo_veiculo,roubo_carga, roubo_comercio,roubo_residencia,roubo_banco,roubo_cx_eletronico,roubo_conducao_saque, roubo_apos_saque, roubo_bicicleta,outros_roubos)
+```
+
+#### Convertendo dados da coluna "mes_ano"
+
+Os dados da coluna "mes_ano" encontram-se no formato "aaaammm" e deverão ser convertidos para o formato "aaaa-mm" Os dados da coluna "Regiao" que possuem o caracter especial "�", deverao ser alterados para a letra "o"
+
+```{r convertendo dados pop, echo=TRUE}
+Bevolucao.roubos.f1.tbl <-Bevolucao.roubos.tbl %>% dplyr::mutate(mes_ano = stringr::str_replace_all(mes_ano, "\\m", "-"))
+Bevolucao.roubos.f1.tbl <-Bevolucao.roubos.f1.tbl %>% dplyr::mutate(Regiao = stringr::str_replace_all(Regiao,"\\�", "o"))
+```
+
+#### Selecionando os movimentos referentes aos três últimos anos
+
+Com base na coluna ano, selecionar o movimento dos três últimos anos.
+
+```{r selecionando dados por ano, echo=TRUE}
+Bevolucao.roubos.f2.tbl=Bevolucao.roubos.f1.tbl %>% dplyr::filter (ano =='2022'| ano =='2021' | ano =='2020')
+```
+
+#### Agrupando por regiao e ano.
+
+Vamos agrupar os dados por regiao e ano,com o objetivo de entender o movimento das ocorrencias de roubo no periodo.
+
+```{r agrupando dados por regiao e ano, echo=TRUE}
+Bevolucao.roubos.f3.tbl <- Bevolucao.roubos.f2.tbl %>% dplyr::group_by(Regiao,ano) %>% dplyr::summarise(roubo_transeunte_sum = sum(roubo_transeunte), roubo_celular_sum=sum(roubo_celular), roubo_em_coletivo_sum=sum(roubo_em_coletivo),roubo_rua_sum = sum(roubo_rua),roubo_veiculo_sum = sum(roubo_veiculo),roubo_carga_sum = sum(roubo_carga),roubo_comercio_sum = sum(roubo_comercio),roubo_residencia_sum = sum(roubo_residencia),roubo_banco_sum = sum(roubo_banco),roubo_cx_eletronico_sum = sum(roubo_cx_eletronico),roubo_conducao_saque_sum = sum(roubo_conducao_saque),roubo_apos_saque_sum = sum(roubo_apos_saque),roubo_bicicleta_sum = sum(roubo_bicicleta),outros_roubos_sum = sum(outros_roubos))
+
+```
+
+## INICIANDO A ANALISE DE DADOS
+
+#### ATENCAO : IDENTIFICAR O TIPO DE VARIAVEIS
+
+#### IDENTIFICANDO O TIPO DE VARIAVEIS
+
+Iniciando a análise dos dados, através do comando diagnose, será identificado o tipo de cada variável.
+
+#### Gerando Grafico
+
+Gerando gráfico para acompanhamento das ocorrencias de roubo por regiao, nos tres ultimos anos
+
+```{r plotando a informacao por regiao e ano, echo = TRUE}
+
+ggplot(Bevolucao.roubos.f3.tbl, aes(x = Regiao, y = roubo_transeunte_sum)) + facet_wrap(~ano)
+```
