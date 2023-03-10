@@ -1,5 +1,5 @@
 ---
-title: "Projeto da Pós Graduação, disciplina Estatística para Cientista de Dados."
+title: "Projeto-Pós Graduação, Estatística para Cientista de Dados."
 author: "Antonio Vieira dos Santos Neto - Cpf 077.523.948-82"
 date: "2023-03-10"
 output:
@@ -7,6 +7,8 @@ output:
     latex_engine: lualatex
   tufte::tufte_handout:
     latex_engine: xelatex
+ 
+df_print: kable
 ---
 
 ```{r setup, include=FALSE}
@@ -27,14 +29,18 @@ Demonstrar os conhecimentos adquiridos na disciplina "Estatística para Cientist
 
 Para a criação do ambiente de trabalho foram adotados os seguinte passos :
 
-1-Instalação da linguagem "R" na máquina do aluno. 2-Instalação do Studio "R" na máquina do aluno. 3-Instalação do "GIT" na máquina do aluno. Esta aplicação permite o controle dos versionamentos dos aplicações desenvolvidas. 4-Configuração na nuvem do "GITHUB, criando um repositório"WORK", para arquivo das aplicações desenvolvidas, bem como, controle do versionamento destas.
+- 1-Instalação da linguagem "R" na máquina do aluno. 
+- 2-Instalação do Studio "R" na máquina do aluno. 
+- 3-Instalação do "GIT" na máquina do aluno. Esta aplicação permite o controle dos versionamentos dos aplicações desenvolvidas. 
+- 4-Configuração na nuvem do "GITHUB, criando um repositório"WORK", para arquivo das aplicações desenvolvidas, bem como, controle do versionamento destas.
 
 -   Atenção:
--   1 - As evidências da configuração do ambiente, segue no documento "PROJETO_ESTATISTICA.PDF"
+-   1 - As evidências da configuração do ambiente, segue no documento "Antonio VSNeto_Estatisticas para Cientista de Dados_evidencias.pdf"
 -   2 - O caminho para o Github do aluno e´: <https://github.com/avsneto2/work.git>
 -   3- Os arquivos do projeto se encontram na branch : Projeto_Estatistica_1
 
-#### Importando bilbiotecas necessárias ao desenvolvimento.
+#### Importando bibliotecas necessárias ao desenvolvimento. - 
+
 
 Para suporte no tratamento da base de dados, foram instaladas as bibliotecas a seguir a partir do comando "install.packages".
 
@@ -56,7 +62,7 @@ Para suporte no tratamento da base de dados, foram instaladas as bibliotecas a s
 
 -   instal.packages ("ggplot2") - Este pacote permite o desenvolvimento de graficos;
 
--   instal.packages ("fitdistrplus") - \*\* Atencao
+-   instal.packages ("fitdistrplus") - Pacote com várias funções para ajudar no ajuste de uma distribuição paramétrica a dados não censurados ou censurados.
 
 ```{r importando bibliotecas, echo=TRUE}
 library(tidyverse)
@@ -70,6 +76,7 @@ library(summarytools)
 library(ggplot2)
 library(fitdistrplus)
 library(readr)
+library(kableExtra)
 
 ```
 
@@ -82,61 +89,65 @@ setwd("E:/DADOS/VIEIRA/POS GRADUACAO/INFINET/CURSO/WORK_Trabalho/work")
 getwd()
 ```
 
-#### Importando dados
+#### Importando dados - 
 
 A partir da definição do ambiente, o arquivo "BaseDPEvolucaoMensalCisp.csv", contendo a base de evolução de registro de ocorrencias do Instituto de Segurança Publica do Rio de Janeiro, será importado utilizando a biblioteca rvest, para ler o arquivo "CSV.
 
 ```{r importando os dados, echo=TRUE}
 ## Bevolucao.tbl <- readr::read_csv2("BaseDPEvolucaoMensalCisp.csv")
 Bevolucao.tbl <- readr::read_csv2("BaseDPEvolucaoMensalCisp.csv", locale=locale(encoding="latin1"))
+kable(head(Bevolucao.tbl, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 
-kable(head(Bevolucao.tbl))
+
+
 ```
 
-#### Selecionando dados
+#### Selecionando dados - 
 
 Uma vez que os dados foram importados, faremos a seleção das colunas importantes para a análise. Dessa forma, serão selecionados os dados referentes as ocorrencias relacionadas ao evento de apreensão de drogas versus roubos.
 
 ```{r selecionando variáveis, echo = TRUE}
 
 Bevolucao.roubos.tbl <- Bevolucao.tbl %>% dplyr::select(CISP,ano,mes_ano,munic,Regiao,apreensao_drogas, roubo_transeunte,roubo_celular,roubo_residencia, roubo_rua)
-kable(head(Bevolucao.roubos.tbl))
+kable(head(Bevolucao.roubos.tbl, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 ```
 
-#### Selecionando os movimentos referentes aos três últimos anos
+#### Selecionando os movimentos referentes aos três últimos anos - 
 
 Com base na coluna ano, selecionar o movimento dos três últimos anos.
 
 ```{r selecionando dados por ano, echo=TRUE}
 Bevolucao.roubos.f1.tbl=Bevolucao.roubos.tbl %>% dplyr::filter (ano =='2022'| ano =='2021' | ano =='2020')
-kable(head(Bevolucao.roubos.f1.tbl))
+kable(head(Bevolucao.roubos.f1.tbl, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
 ```
 
-#### Agrupando por regiao, munic, ano e mes/ano.
+#### Agrupando por regiao, munic, ano e mes/ano. - 
 
 Vamos agrupar os dados por regiao, municipio e ano,com o objetivo de entender o movimento das ocorrencias de roubo no periodo.
 
 ```{r agrupando dados por regiao, munic, ano, echo=TRUE}
 Bevolucao.roubos.f2.tbl <- Bevolucao.roubos.f1.tbl %>% dplyr::group_by(Regiao, munic, ano, mes_ano) %>% dplyr::summarise(roubo_transeunte_sum = sum(roubo_transeunte), apreensao_drogas_sum = sum(apreensao_drogas),roubo_celular_sum = sum(roubo_celular),roubo_residencia_sum = sum(roubo_residencia),roubo_rua_sum =sum(roubo_rua))
-kable(head(Bevolucao.roubos.f2.tbl))
+kable(head(Bevolucao.roubos.f2.tbl, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
 ```
 
-#### Convertendo dados da coluna "mes_ano" e retirando caracter com acento.
+#### Convertendo dados da coluna "mes_ano" - 
 
 Os dados da coluna "mes_ano" encontram-se no formato "aaaammm" e deverão ser convertidos para o formato "aaaa-mm".
 
 ```{r convertendo dados pop, echo=TRUE}
-
 Bevolucao.roubos.f3.tbl <-Bevolucao.roubos.f2.tbl %>% dplyr::mutate(mes_ano = stringr::str_replace_all(mes_ano, "\\m", "-"))
-
-kable(head(Bevolucao.roubos.f3.tbl))
+kable(head(Bevolucao.roubos.f3.tbl, 10), booktabs = TRUE) %>%  kable_styling(font_size = 7)
 ```
+
+
 
 ## Iniciando a analise dos dados
 
-#### Identificando os tipos de variaveis
+#### Identificando os tipos de variaveis - 
 
-Para identificar os tipos de cada variável na base, vamos utilizar o pacote "dlookr".
+Para identificar os tipos de cada variável na base, vamos utilizar o pacote "dlookr"e a função "diagnose".
 
 ```{r identificando os tipos de variáveis, echo = TRUE}
 Bevolucao.roubos.f3.tbl%>% dlookr::diagnose()
@@ -149,32 +160,36 @@ Na tabela "Bevolucao.roubos.f3.tbl" é possivel identificar as variaveis do tipo
 -   ano = ano relacionado ao registro das ocorrencias.
 -   mes_ano= mes e ano relacionado ao registro das ocorrencias
 
-Na tabela "Bevolucao.roubos.f4.tbl" e possivel identificar as variaveis do tipo QUANTITATIVAS DISCRETAS que são:
+Na tabela "Bevolucao.roubos.f3.tbl" e possivel identificar as variaveis do tipo QUANTITATIVAS DISCRETAS que são:
 
 -   roubo_transeunte_sum
 -   apreensao_drogas_sum
+-   roubo_celular_sum 
+-   roubo_residencia_sum
+-   roubo_rua_sum 
 
 #### Identicando a frequencia de variaveis
 
-Para o próximo passo irei analiser a frequencia das variaveis.
+Para o próximo passo será analisada a frequencia das variaveis, dessa forma identificando a região com maior incidencia de ocorrencias.
 
 Dessa forma a base foi sumarizada pelas variaveis "Ano(ano)", "Regiao(Regiao)" e "Municipio(munic)", sendo que, para cada ano, foi verificada a frequencia da variavel "Regiao".
 
 ```{r agrupa por ano/Regiao/munic, echo = TRUE}
 
 Bevolucao.roubos.f4.tbl <- Bevolucao.roubos.f3.tbl %>% dplyr::group_by(ano, Regiao, munic) %>% dplyr::select(Regiao,ano,roubo_transeunte_sum, apreensao_drogas_sum,roubo_celular_sum,roubo_residencia_sum,roubo_rua_sum) %>% dplyr::summarise(roubo_transeunte_sum = sum(roubo_transeunte_sum), apreensao_drogas_sum = sum(apreensao_drogas_sum),roubo_celular_sum = sum(roubo_celular_sum),roubo_residencia_sum = sum(roubo_residencia_sum),roubo_rua_sum = sum(roubo_rua_sum))
-kable(head(Bevolucao.roubos.f4.tbl))
+kable(head(Bevolucao.roubos.f4.tbl, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 ```
 
 -   Frequencia da variavel : Regiao
 
+- Conclusão : 
 O que se observa com base na analise de frequencia, é que a maior ocorrencia dos eventos de roubos e apreensao de drogas, em termos de quantidade de municipios, se da na REGIAO DO INTERIOR DO RIO DE JANEIRO, com 79.27% (65 ocorrencias).
 
 ```{r frequência variavel Regiao, echo = TRUE}
 Bevolucao.roubos.f4.tbl %>% dplyr::group_by(ano) %>% dplyr::select(Regiao) %>% summarytools::freq()
 ```
 
-#### Fazendo analise descritiva e de histogramas de uma variavel quantitativa discreta
+#### Fazendo analise descritiva e de histogramas de uma variavel quantitativa discreta - 
 
 Com base nas variaveis qualitativas (Ano e Regiao), foi feita uma análise considerando a centralidade dos dados para a variavel roubo_transeunte_sum e apreensao_drogas_sum, através da funcao descr do pacote summarytools (descr).
 
@@ -198,7 +213,7 @@ Dado que não tenho conhecimento da binarização ideal, será considerado o int
 
 ```{r agrupando por ano,Regiao , echo = TRUE}
 Bevolucao.roubos.f5.tbl <- Bevolucao.roubos.f4.tbl %>% dplyr::group_by(Regiao,ano,munic) %>% dplyr::filter (ano =='2022'& Regiao=="Interior") %>%  dplyr::select(ano, Regiao,munic, roubo_transeunte_sum, apreensao_drogas_sum,roubo_celular_sum, roubo_residencia_sum, roubo_rua_sum) %>% dplyr::summarise(roubo_transeunte_sum = sum(roubo_transeunte_sum), apreensao_drogas_sum = sum(apreensao_drogas_sum),roubo_celular_sum = sum(roubo_celular_sum),roubo_residencia_sum = sum(roubo_residencia_sum),roubo_rua_sum = sum(roubo_rua_sum))
-kable(head(Bevolucao.roubos.f5.tbl))
+kable(head(Bevolucao.roubos.f5.tbl, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 
 ```
 
@@ -224,7 +239,7 @@ No Caso em questão, observação uma concentração de dados a esquerda, com ca
 Bevolucao.roubos.f5.tbl %>% dplyr::select(roubo_transeunte_sum) %>% ggplot(aes(x=roubo_transeunte_sum))+geom_histogram(aes(y = after_stat(density)) ,bins = 30, fill = 'lightblue') + xlab('roubo_transeunte_sum') + ylab('Densidade de Frequência') + labs(title = "Distribuição dos dados de crimes aproximada por Histograma", subtitle = "Binarização sugerida pelos detentores dos Dados") + geom_vline(xintercept=c(median(Bevolucao.roubos.f5.tbl$roubo_transeunte_sum), mean(Bevolucao.roubos.f5.tbl$roubo_transeunte_sum))) + annotate("text", x=median(Bevolucao.roubos.f5.tbl$roubo_transeunte_sum) + 0.3, y=0.05, label="Mediana", angle=90) + annotate("text", x=mean(Bevolucao.roubos.f5.tbl$roubo_transeunte_sum) + 0.3, y=0.05, label="Média", angle=90) + geom_density(linetype = 2) + theme_classic()
 ```
 
-Neste caso, a amplitude da binarização foi ajustada para acompanhar a curva de pontos dos dados, onde cheguei a conclusçao que a amplitude ideal para a binarização é considerar o valor de 30.
+Neste caso, a amplitude da binarização foi ajustada para acompanhar a curva de pontos dos dados, onde cheguei a conclusao que a amplitude ideal para a binarização é considerar o valor de 30.
 
 Poderíamos também considerar outras regra de binarização levando em consideração regras disponíveis na literatura, como a regra de Freedman-Diaconis, bem como a regra de Sturge, como segue:
 
@@ -259,9 +274,11 @@ Para as características da base analisada, com uma assimetria acentuada, a regr
 
 Neste caso farei o filtro para selecionando as localidades que tenham valores para apreensão de drogas (apreensao_drogas_sum) que deverá ser comparado com outras 4 variaveis da base.
 
-##```{r Correlacao de variaveis , echo = TRUE}
-## kable(cor(Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% ## dplyr::select(apreensao_drogas_sum, ## roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum))) 
-## ```
+```{r Correlacao de variaveis , echo = TRUE}
+
+kable(cor(Bevolucao.roubos.f1.tbl %>% dplyr::filter (ano =='2022'& Regiao=="Interior") %>% dplyr::select(apreensao_drogas, roubo_celular, roubo_residencia,roubo_transeunte)))
+
+```
 
 -   Scatterplot apreensao_drogas_sum x roubo_transeunte_sum
 
@@ -280,6 +297,8 @@ Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% dply
 ```{r analisando scatter entre variaveis mais correlacionadas2 , echo = TRUE}
 Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=apreensao_drogas_sum, y =roubo_residencia_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
 ```
+
+#### Criando um grafico de barras 
 
 -   Criando um grafico de barras, utilizando 2 variaveis
 
