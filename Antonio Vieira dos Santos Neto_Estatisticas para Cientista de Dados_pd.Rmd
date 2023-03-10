@@ -2,7 +2,11 @@
 title: "Projeto da Pós Graduação, disciplina Estatística para Cientista de Dados."
 author: "Antonio Vieira dos Santos Neto - Cpf 077.523.948-82"
 date: "2023-03-10"
-output: pdf_document
+output:
+  bookdown::pdf_document2:
+    latex_engine: lualatex
+  tufte::tufte_handout:
+    latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE}
@@ -255,9 +259,9 @@ Para as características da base analisada, com uma assimetria acentuada, a regr
 
 Neste caso farei o filtro para selecionando as localidades que tenham valores para apreensão de drogas (apreensao_drogas_sum) que deverá ser comparado com outras 4 variaveis da base.
 
-PAREI AQUI
-
-### `{r Correlacao de variaveis , echo = TRUE} ### kable(cor(Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>%  ### dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum))) ###`
+##```{r Correlacao de variaveis , echo = TRUE}
+## kable(cor(Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% ## dplyr::select(apreensao_drogas_sum, ## roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum))) 
+## ```
 
 -   Scatterplot apreensao_drogas_sum x roubo_transeunte_sum
 
@@ -277,8 +281,7 @@ Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% dply
 Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=apreensao_drogas_sum, y =roubo_residencia_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
 ```
 
-- Criando um grafico de barras, utilizando 2 variaveis 
-
+-   Criando um grafico de barras, utilizando 2 variaveis
 
 ```{r grafico de barras, echo = TRUE}
 ggplot(Bevolucao.roubos.f5.tbl %>% dplyr::filter(munic =="Angra dos Reis"|munic == "Araruama"| munic=="Cabo Frio" |munic=="Cambuci") %>% dplyr::select(munic, roubo_rua_sum), aes(x = munic, y =roubo_rua_sum)) + geom_bar(stat = "identity")
