@@ -23,7 +23,8 @@ Neste documento, segue o passo a passo, onde são demonstrados os conhecimentos 
 
 ## Objetivo do Projeto
 
-Demonstrar os conhecimentos adquiridos na disciplina "Estatística para Cientista de Dados", sendo que , através do uso da Linguagem "R", serão feitas diversas análises em uma "Base de evolução de registro de ocorrências do Instituto de Segurança Pública do Rio de Janeiro".
+Demonstrar os conhecimentos adquiridos na disciplina "Estatística para Cientista de Dados", sendo que , através do uso da Linguagem "R", serão feitas diversas análises em uma "Base de evolução de registro de ocorrências do Instituto de Segurança Pública do Rio de Janeiro". 
+- A análise visa, demonstrar a relação nas ocorrencias de apreensão de drogas e roubos de transeuntes, roubos de residencias e ou roubo de celulares, analisando a concentração de ocorrencias para cada evento.  
 
 ## Preparando o ambiente de análise
 
@@ -138,7 +139,7 @@ Os dados da coluna "mes_ano" encontram-se no formato "aaaammm" e deverão ser co
 
 ```{r convertendo dados pop, echo=TRUE}
 Bevolucao.roubos.f3.tbl <-Bevolucao.roubos.f2.tbl %>% dplyr::mutate(mes_ano = stringr::str_replace_all(mes_ano, "\\m", "-"))
-kable(head(Bevolucao.roubos.f3.tbl, 10), booktabs = TRUE) %>%  kable_styling(font_size = 7)
+kable(head(Bevolucao.roubos.f3.tbl, 10), booktabs = TRUE) %>%  kable_styling(font_size = 9)
 ```
 
 
@@ -194,6 +195,15 @@ Bevolucao.roubos.f4.tbl %>% dplyr::group_by(ano) %>% dplyr::select(Regiao) %>% s
 Com base nas variaveis qualitativas (Ano e Regiao), foi feita uma análise considerando a centralidade dos dados para a variavel roubo_transeunte_sum e apreensao_drogas_sum, através da funcao descr do pacote summarytools (descr).
 
 -Variavel roubo_transeunte_sum : A conclusão é que na maioria das regiões existe uma divergência considerável entre os valores de média (Mean) e mediana (Median), o que sugere a presença de outliers.
+
+Dados calculados para o ano 2020 e Regiao Baixada Fluminense : 
+
+- Média   (Mean)      =  973.46 
+- Mediana(Median-Q2)  =  335.00 
+- Quartil 25% (Q1)    =  112.00 
+- Quartil 75% (Q3)    = 1459.00 
+- Desvio Padrao (IQR) = 1347.00
+
 
 ```{r desc variavel roubo_transeunte_sum3 , echo = TRUE}
 Bevolucao.roubos.f4.tbl %>% dplyr::group_by(ano,Regiao) %>% dplyr::select(roubo_transeunte_sum) %>% summarytools::descr()
@@ -274,33 +284,39 @@ Para as características da base analisada, com uma assimetria acentuada, a regr
 
 Neste caso farei o filtro para selecionando as localidades que tenham valores para apreensão de drogas (apreensao_drogas_sum) que deverá ser comparado com outras 4 variaveis da base.
 
+-Conclusao :  as variaveis com maior correlação sao: 
+                    roubo_celular    x roubo_transeunte 
+                    roubo_residencia x roubo_transeunte 
+                    roubo_celular    x robuo_residencia 
+ 
+
 ```{r Correlacao de variaveis , echo = TRUE}
 
 kable(cor(Bevolucao.roubos.f1.tbl %>% dplyr::filter (ano =='2022'& Regiao=="Interior") %>% dplyr::select(apreensao_drogas, roubo_celular, roubo_residencia,roubo_transeunte)))
 
 ```
 
--   Scatterplot apreensao_drogas_sum x roubo_transeunte_sum
+-   Scatterplot roubo_celular_sum x roubo_transeunte_sum
 
 ```{r analisando scatter entre variaveis mais correlacionadas3 , echo = TRUE}
-Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=apreensao_drogas_sum, y =roubo_transeunte_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+Bevolucao.roubos.f5.tbl %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=roubo_celular_sum, y =roubo_transeunte_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
 ```
 
--   Scatterplot apreensao_drogas_sum x roubo_celular_sum
+-   Scatterplot roubo_celular x roubo_residencia 
 
 ```{r analisando scatter entre variaveis mais correlacionadas , echo = TRUE}
-Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=apreensao_drogas_sum, y =roubo_celular_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+Bevolucao.roubos.f5.tbl %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=roubo_celular_sum, y =roubo_residencia_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
 ```
 
--   Scatterplot apreensao_drogas_sum x roubo_residencia_sum
+-   Scatterplot roubo_residencia_sum x roubo_transeunte_sum
 
 ```{r analisando scatter entre variaveis mais correlacionadas2 , echo = TRUE}
-Bevolucao.roubos.f5.tbl %>% dplyr::filter(!is.na(apreensao_drogas_sum)) %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=apreensao_drogas_sum, y =roubo_residencia_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+Bevolucao.roubos.f5.tbl %>% dplyr::select(apreensao_drogas_sum, roubo_transeunte_sum,roubo_celular_sum,roubo_residencia_sum) %>% ggplot(aes(x=roubo_residencia_sum, y =roubo_transeunte_sum)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
 ```
 
 #### Criando um grafico de barras 
 
--   Criando um grafico de barras, utilizando 2 variaveis
+-   Criando um grafico de barras, utilizando 2 variaveis (municipio e roubo de rua)
 
 ```{r grafico de barras, echo = TRUE}
 ggplot(Bevolucao.roubos.f5.tbl %>% dplyr::filter(munic =="Angra dos Reis"|munic == "Araruama"| munic=="Cabo Frio" |munic=="Cambuci") %>% dplyr::select(munic, roubo_rua_sum), aes(x = munic, y =roubo_rua_sum)) + geom_bar(stat = "identity")
