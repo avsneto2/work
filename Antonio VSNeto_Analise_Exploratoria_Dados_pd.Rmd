@@ -1,0 +1,488 @@
+---
+title: "Projeto-Pós Graduação, Analise Exploratória de Dados."
+author: "Antonio Vieira dos Santos Neto - Cpf 077.523.948-82"
+date: "2023-04-11"
+output:
+ 
+  bookdown::pdf_document2:
+    latex_engine: lualatex
+  tufte::tufte_handout:
+    latex_engine: xelatex
+df_print: kable
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk $ set(echo = TRUE)
+```
+
+# Introdução
+
+O presente projeto visa demonstrar os conhecimentos nos fundamentos
+básicos na utilização da linguagem "R", bem como, nos conhecimentos de
+Estatística.
+
+Neste documento, segue o passo a passo, onde são demonstrados os
+conhecimentos adquiridos na disciplina, "ANALISE EXPLORATÓRIA DE DADOS".
+
+# Objetivo do Projeto
+
+Demonstrar os conhecimentos adquiridos na disciplina "ANALISE
+EXPLORATÓRIA DE DADOS", sendo que , através do uso da Linguagem "R",
+serão feitas diversas análises em uma "Base de PIB real por países,
+extraida do livro do Stock & Watson, apresentada em papaer do
+Acemoglu. - A análise visa, demonstrar o crescimento do PIB nos 3
+ultimos anos de 3 paises europeus e 3 paises da América do Sul.
+
+# Preparando o ambiente de análise
+
+Para a criação do ambiente de trabalho foram adotados os seguinte passos
+:
+
+-   1-Instalação da linguagem "R" na máquina do aluno.
+
+-   2-Instalação do Studio "R" na máquina do aluno.
+
+-   3-Instalação do "GIT" na máquina do aluno. Esta aplicação permite o
+    controle dos versionamentos dos aplicações desenvolvidas.
+
+-   4-Configuração na nuvem do "GITHUB, criando um repositório"WORK",
+    para arquivo das aplicações desenvolvidas, bem como, controle do
+    versionamento destas.
+
+-   Atenção:
+
+-   1 - As evidências da configuração do ambiente, segue no documento
+    "Antonio VSNeto_Analise_Expl_Dados_evidencias.pdf"
+
+-   2 - O caminho para o Github do aluno e´:
+    <https://github.com/avsneto2/work.git>
+
+-   3- Os arquivos do projeto se encontram na branch : Anal_Exploratoria
+
+# Importando bibliotecas necessárias ao desenvolvimento. -
+
+Para suporte no tratamento da base de dados, foram instaladas as
+bibliotecas a seguir a partir do comando "install.packages".
+
+-   install.packages("tidyverse") - Pacote de ferramentas que tem por
+    objetivo manipulação, exploração e visualização de dados.
+
+-   install.packages("data.table") - Pacote que também tem a função de
+    manipular dados, porém, em algumas situações, permite o tratamento
+    de dados com maior velocidade
+
+-   install.packages("rvest") - Uma das funções do Pacote "rvest" e
+    permitir a leitura de dados a partir de código html, dessa forma o
+    "R" poderá mapear e navegar pela arvore do html.
+
+-   install.packages("robotstxt") - Este pacote fornece funcoes para
+    baixar e analisar arquivos 'robots.txt'.
+
+-   install.packages("knitr") - Este pacote tem a funcao de gerar
+    relatorios dinamicos com R.
+
+-   install.packages ("dlookr") - Este pacote informações estatísticas
+    sobre dados como visualização, valores ausentes, discrepantes e
+    valores exclusivos e negativos, com o objetivo de entender a
+    distribuição e qualidade dos dados.
+
+-   install.packages ("readxl") - Este pacote permite a leitura de
+    arquivos excel.
+
+-   install.packages ("summarytools") - Este pacote permite a análise de
+    dados, como a frequencia de uma determinada variavel;
+
+-   install.packages ("ggplot2") - Este pacote permite o desenvolvimento
+    de graficos;
+
+-   install.packages ("fitdistrplus") - Pacote com várias funções para
+    ajudar no ajuste de uma distribuição paramétrica a dados não
+    censurados ou censurados.
+
+-   install.packages ("Amelia") - Pacote R para a imputação múltipla de
+    dados incompletos multivariados. Ele usa um algoritmo que combina
+    bootstrapping e o algoritmo EM para extrair dados posteriores dos
+    dados ausentes. O pacote Amelia inclui transformações de
+    normalização, priorizações em nível de célula e métodos para lidar
+    com dados transversais de séries temporais.
+
+-   install.packages ("mice") - Pacote R que ajuda a imputar valores
+    ausentes com valores de dados plausíveis. Esses valores plausíveis
+    são extraídos de uma distribuição projetada especificamente para
+    cada ponto de dados ausente
+
+-   install.packages ("corrplot") - Pacote R que fornece uma ferramenta
+    exploratória visual na matriz de correlação que oferece suporte à
+    reordenação automática de variáveis para ajudar a detectar padrões
+    ocultos entre as variáveis.
+
+-   install.packages ("ggpubr") - Pacote R que facilita a criação de
+    belos gráficos baseados em ggplot2 para pesquisadores com
+    experiência em programação não avançada.
+
+-   install.packages ("data.table") - Amplamente usado para agregação
+    rápida de grandes conjuntos de dados, adição/atualização/remoção de
+    colunas de baixa latência, junções ordenadas mais rápidas e um
+    leitor de arquivos rápido.
+
+-   install.packages ("plm") - Pacote para R que pretende simplificar a
+    estimação de modelos de painéis lineares. O PLM fornece funções para
+    estimar uma ampla variedade de modelos e fazer inferências
+    (robustas).
+
+-   install.packages ("shiny") - pacote R que facilita a criação de
+    aplicativos da Web interativos diretamente do R. Você pode hospedar
+    aplicativos independentes em uma página da Web ou incorporá-los em
+    documentos R Markdown ou criar painéis.
+
+-   install.packages ("flexdashboard") - pode criar um documento a
+    partir do RStudio usando a caixa de diálogo Arquivo -\> Novo arquivo
+    -\> R Markdown e escolhendo um modelo "Flex Dashboard"
+
+# Carregando bibliotecas
+
+```{r importando bibliotecas, echo=FALSE}
+library(tidyverse)
+library(rvest)
+library(data.table)
+library(robotstxt)
+library(knitr)
+library(dlookr)
+library(readxl)
+library(summarytools)
+library(ggplot2)
+library(fitdistrplus)
+library(readr)
+library(kableExtra)
+library("Amelia")
+library("mice")
+library("corrplot")
+library("ggpubr")
+library("data.table")
+library("plm")
+library("shiny")
+library("flexdashboard")
+
+```
+
+# Definindo o diretório de trabalho para o projeto
+
+Posteriomente, vamos trocar o diretório de referência para o trabalho,
+mas não vamos deixar essa informação pública para o usuário.
+
+```{r mudando o diretório, echo=FALSE}
+setwd("E:/DADOS/VIEIRA/POS GRADUACAO/INFINET/CURSO/WORK_TRABALHO_2")
+getwd()
+```
+
+# Importando dados
+
+A partir da definição do ambiente, o arquivo "income_democracy.xlsx",
+contendo a base de pib real por países, será importada utilizando a
+biblioteca rvest, para ler o arquivo xlsx.
+
+```{r importando os dados, echo=TRUE}
+## Bevolucao.tbl <- readr::read_csv2("BaseDPEvolucaoMensalCisp.csv")
+## Bevolucao.tbl <- readr::read_csv2("BaseDPEvolucaoMensalCisp.csv", locale=locale(encoding="latin1"))
+## kable(head(Bevolucao.tbl, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+income <- readxl::read_excel("income_democracy.xlsx")
+names(income)[c(1:2, 4:length(names(income)))] <- c("pais", "ano", "Log.pib.real", "Log.populacao", "fracao.pop.0_14", "fracao.pop.15_19", "fracao.pop.30_44", "fracao.pop.45_59","fracao.pop.60_mais", "educ.adultos", "idade.mediana", "pais.idx")
+
+```
+
+# Selecionando dados
+
+## Selecionando - variaveis
+
+Considerando o espaço amostral importado, para fins do trabalho será
+selecionado um evento contendo 3 (tres) países europeus e 3 paises da
+America do Sul, considerando os anos de 1990, 1995 e 2000.
+
+```{r selecionando variáveis, echo = TRUE}
+
+income.arq1 <- income %>% dplyr::select(pais,ano,Log.pib.real,educ.adultos, fracao.pop.0_14,fracao.pop.15_19,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)
+kable(head(income.arq1, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+```
+
+## Selecionando - dados referentes aos anos de 1990, 1995 e 2000.
+
+Com base na coluna ano, selecionar o movimento dos três últimos anos.
+
+```{r selecionando dados por ano, echo=TRUE}
+income.arq2 <- income.arq1  %>% dplyr::filter (ano =='1990'| ano =='1995' | ano =='2000')
+kable(head(income.arq2, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+```
+
+## Selecionando - dados referentes aos paises : Europeus = Italy, France, Germany / Am.Sul = Brazil, Argentina, Paraguay
+
+Com base na coluna pais, selecionar os paises objetos da analise.
+
+```{r selecionando dados por pais, echo=TRUE}
+income.arq3 <- income.arq2  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia')
+kable(head(income.arq3, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+income.arq3.eur <- income.arq2  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany')
+kable(head(income.arq3.eur, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+income.arq3.amsul <- income.arq2  %>% dplyr::filter (pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia')
+kable(head(income.arq3.amsul, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+```
+
+# Iniciando a analise dos dados
+
+## Identificando os tipos de variaveis
+
+Para identificar os tipos de cada variável na base, vamos utilizar o
+pacote "dlookr"e a função "diagnose".
+
+```{r identificando os tipos de variáveis, echo = TRUE, warning=FALSE, results='asis'}
+income.arq3 %>% dlookr::diagnose()  %>% kable()
+```
+
+A partir do função diagnose é possível identificar o tipo de cada
+variável do espaço amostral, sendo:
+
+-   pais - Variavel qualitativa
+-   ano - variavel ordinal
+-   log.pib.real - variavel continua
+-   educ.adultos - variavel continua
+-   fracao.pop.0_14 - variavel continua
+-   fracao.pop.15_19 - variavel continua
+-   fracao.pop.30_44 - variavel continua
+-   fracao.pop.45_59 - variavel continua
+-   fracao.pop.60_mais - variavel continua
+
+## Análise descritiva
+
+Considerando as variaveis continuas, vamos analisar a centralidade dos
+dados, bem como a presença de outliers. Será utilizada a função descr do
+pacote summarytools, para esta análise.
+
+```{r desc variavel pibrealeur, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.eur %>% dplyr::select(Log.pib.real) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.48 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simétrico.
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 9.85)
+e Mediana (Median =9.88), o que também remete a uma simetria entre os
+valores europeus de PIB.
+
+```{r desc variavel pibrealams, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.amsul %>% dplyr::select(Log.pib.real) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.37 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simétrico, para os valores de PIB na America do Sul.
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 8.55)
+e Mediana (Median = 8.74 ), o que também remete a uma simetria entre os
+valores de PIB na America do Sul.
+
+```{r desc variavel fpopeur, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.eur %>% dplyr::select(fracao.pop.30_44) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em 0.41 e sabendo-se que valores de
+skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de um
+caso fracamente simétrico, para os valores de PIB na Europa, para a
+faixa de idade entre 30 e 44 anos.
+
+Pode-se observar tambem a igualdade entre os valores da media (Mean =
+0.21) e Mediana (Median = 0.21 ), demonstra a ausencia de outliers nos
+valores europeus para a faixa de populacao entre 30 e 44 anos.
+
+```{r desc variavel fpopams, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.amsul %>% dplyr::select(fracao.pop.30_44) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em 0.72 e sabendo-se que valores de
+skew na faixa de 0.5 \< skew \< 1, podemos afirmar que trata-se de um
+caso assimetria moderada, para os valores de PIB na America do Sul, para
+a faixa de idade entre 30 e 44 anos.
+
+Pode-se observar tambem a divergencia entre os valores da media (Mean =
+0.18) e Mediana (Median = 0.19 ), demonstra a presença de valores
+outliers nos valores da America do Sul para a faixa de populacao entre
+30 e 44 anos.
+
+## Analisando a matriz de correlação - Grafico de scatter matrix
+
+```{r Correlacao de variaveis eu , echo = TRUE}
+kable(cor(income.arq3.eur %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)))
+```
+
+É possivel verificar que a faixa etária onde se concentra o maior indice
+de educacao de adultos esta entre 30 e 44 anos, para os paises europeus.
+
+Podemos a partir daí, contruir um scatterplot entre as variáveis
+educ.adultos e fracao.pop.30_44.
+
+```{r analisando scatter entre variaveis mais correlacionadas , echo = TRUE, results='asis'}
+income.arq3.eur %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos, fracao.pop.30_44) %>% ggplot(aes(x=educ.adultos, y =fracao.pop.30_44)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+```{r Correlacao de variaveis am , echo = TRUE}
+kable(cor(income.arq3.amsul %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)))
+```
+
+É possível verificar que a maior correlação entre a variavel
+educ.adultos para os paises da America do Sul se concentra na fração de
+populacao com idade superior a 60 anos (fracao.pop.60_mais)
+
+Podemos a partir daí, contruir um scatterplot entre as variáveis
+educ.adultos e fracao.pop.60_mais.
+
+```{r analisando scatter entre variaveis mais correlacionadas am , echo = TRUE, results='asis'}
+income.arq3.amsul %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos, fracao.pop.30_44) %>% ggplot(aes(x=educ.adultos, y =fracao.pop.30_44)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+## Verificando distribuição normal
+
+Deve-se entender como DISTRIBUIÇÃO NORMAL, uma função de probabilidade
+cujo gráfico descreve uma curva no formato de sino. Também conhecida
+como GAUSSIANA. Dessa forma, podemos observar uma simetria no formato da
+curva do gráfico, bem como, valores muito próximos entre MÉDIA e
+MEDIANA.
+
+## Criando um Histograma
+
+Através do histrograma abaixo, será possível ilustrar a distribuição do
+evento amostral considerado neste trabalho, observando a concentração de
+dados, bem como, a eventual presença de outliers.
+
+A escolha do numero de bins foi livre e considerando que os eventos
+amostrais avaliados até o momento tem um simetria moderada, a escolha de
+bins = 20 no histrograma, permitiu essa visiblidade. Também no gráfico,
+não observa-se a presença de outliers, confirmando o resultado das
+funções summarytools::descr(), executadas acima.
+
+```{r analisando hfpopeur visualmente , echo = TRUE, results='asis'}
+income.arq3.eur %>% dplyr::select(fracao.pop.30_44) %>% ggplot(aes(x=fracao.pop.30_44))+geom_histogram(aes(y = after_stat(density)) ,bins = 20, fill = 'lightblue') + xlab('Fracao Populacao-30/44') + ylab('Densidade de Frequência') + geom_vline(xintercept=c(median(income.arq3.eur$fracao.pop.30_44), mean(income.arq3.eur$fracao.pop.30_44))) + annotate("text", x=median(income.arq3.eur$fracao.pop.30_44) + 0.3, y=0.05, label="Mediana", angle=90) + annotate("text", x=mean(income.arq3.eur$fracao.pop.30_44) + 0.3, y=0.05, label="Média", angle=90) + theme_classic()
+```
+
+```{r analisando hfpopams visualmente , echo = TRUE, results='asis'}
+income.arq3.amsul %>% dplyr::select(fracao.pop.30_44) %>% ggplot(aes(x=fracao.pop.30_44))+geom_histogram(aes(y = after_stat(density)) ,bins = 20, fill = 'lightblue') + xlab('Fracao Populacao-30/44') + ylab('Densidade de Frequência') + geom_vline(xintercept=c(median(income.arq3.amsul$fracao.pop.30_44), mean(income.arq3.amsul$fracao.pop.30_44))) + annotate("text", x=median(income.arq3.eur$fracao.pop.30_44) + 0.3, y=0.05, label="Mediana", angle=90) + annotate("text", x=mean(income.arq3.amsul$fracao.pop.30_44) + 0.3, y=0.05, label="Média", angle=90) + theme_classic()
+```
+
+## Criando um grafico Q-Q (qqplot)
+
+```{r qqeur , echo = TRUE}
+qqnorm ( income.arq3.eur$fracao.pop.30_44, pch = 1 , frame = FALSE )
+qqline (income.arq3.eur$fracao.pop.30_44)
+```
+
+```{r qqams , echo = TRUE}
+qqnorm ( income.arq3.amsul$fracao.pop.30_44, pch = 1 , frame = FALSE )
+qqline (income.arq3.amsul$fracao.pop.30_44)
+
+```
+
+## Executando teste Shapiro-Wilk
+
+```{r shapiro wilk eur, echo = FALSE}
+shapiro.test(income.arq3.eur$fracao.pop.30_44)
+
+```
+
+```{r shapiro wilk ams, echo = FALSE}
+shapiro.test(income.arq3.amsul$fracao.pop.30_44)
+
+```
+
+## Conclusão
+
+```         
+Os dados avaliados tanto para o evento formado pelos paises europeus, bem como, o evento formado pelos paises da America do Sul, observa-se a normalidade dos dados, observou-se na media e medianas com valores muito próximos, sem a presença de outliers. 
+Também na análise dos graficos, seja de histrograma observa-se uma distribuição concentrada dos dados, com formato Gausseano e através dos gráficos de QQnorm e qqline do pacote ggppubr onde os valores estão próximos da reta, demonstrando também a normalidade dos dados. 
+```
+
+## Completude
+
+A qualidade de dados é um quesito de extrema relevancia nas ações de
+negócios. Desta forma a coleta, organização, tratamento dos dados, é um
+processo delicado que requer especialização dos profissionais
+envolvidos.
+
+A completude dos dados, esta relacionada ao devido preenchimento de
+dados nas variáveis, evitando que a ausência de informações que levem a
+conclusões incorretas nas respectivas análises.
+
+Vamor utilizar a função freq do summaytools para determinar a completude
+das variáveis do banco:
+
+-   Variavel pais possui uma completude de 100.000 %
+-   Variavel ano possui uma completude de 100.000 %
+-   Variavel dem_ind possui uma completude de 92.476 %
+-   Variavel log.pib.real possui uma completude de 70.562 %
+-   Variavel log.populacao possui uma completude de 87.801%
+-   Variavel fracao.pop.0_14 possui uma completude de 92.622%
+-   Variavel fracao.pop.0_14 possui uma completude de 92.622%
+-   Variavel fracao.pop.15_19 possui uma completude de 92.622%
+-   Variavel fracao.pop.30_44 possui uma completude de 92.622%
+-   Variavel fracao.pop. 45_59 possui uma completude de 92.622%
+-   Variavel fracao.pop. 60_mais possui uma completude de 92.622%
+-   Variavel educ.adultos possui uma completude de 56.976%
+-   Variavel idade.mediana possui uma completude de 88.678%
+-   Variavel pais.idx possui uma completude de 100.000 %
+
+```{r frequência vp , echo = TRUE}
+income %>%  dplyr::select(pais) %>% summarytools::freq()
+```
+
+```{r frequência ano , echo = TRUE}
+income %>%  dplyr::select(ano) %>% summarytools::freq()
+```
+
+```{r frequência dem , echo = TRUE}
+income %>%  dplyr::select(dem_ind) %>% summarytools::freq()
+```
+
+```{r frequência pib , echo = TRUE}
+income %>%  dplyr::select(Log.pib.real) %>% summarytools::freq()
+```
+
+```{r frequência Lp , echo = TRUE}
+income %>%  dplyr::select(Log.populacao) %>% summarytools::freq()
+```
+
+```{r frequência fra14 , echo = TRUE}
+income %>%  dplyr::select(fracao.pop.0_14) %>% summarytools::freq()
+```
+
+```{r frequência Lp19 , echo = TRUE}
+income %>%  dplyr::select(fracao.pop.15_19) %>% summarytools::freq()
+```
+
+```{r frequência Lp44 , echo = TRUE}
+income %>%  dplyr::select(fracao.pop.30_44) %>% summarytools::freq()
+```
+
+```{r frequência Lp59 , echo = TRUE}
+income %>%  dplyr::select(fracao.pop.45_59) %>% summarytools::freq()
+```
+
+```{r frequência Lp60 , echo = TRUE}
+income %>%  dplyr::select(fracao.pop.60_mais) %>% summarytools::freq()
+```
+
+```{r frequência edad , echo = TRUE}
+income %>%  dplyr::select(educ.adultos) %>% summarytools::freq()
+```
+
+```{r frequência idmed , echo = TRUE}
+income %>%  dplyr::select(idade.mediana) %>% summarytools::freq()
+```
+
+```{r frequência paisidx , echo = TRUE}
+income %>%  dplyr::select(pais.idx) %>% summarytools::freq()
+```
