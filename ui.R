@@ -31,17 +31,17 @@ shinyUI(
               #Introduzindo a primeira página com sugestões de leitura 
               flowLayout(img(src='logo_infnet.png', align = "left", height = '100px', width = '100px'),
                includeMarkdown("introducao.Rmd"))),
-		 tabPanel("Renda e Democracia - Europa",
+		 tabPanel("Renda e Democracia - 1995/2000 - Europa/America Sul",
 		          p("Gráfico de linhas sob seleção de variáveis"),
 		          
 		          #Painel principa com plot de income.arq3.eur por linha
-		          mainPanel(plotOutput("dist_europa")),
+		          mainPanel(plotOutput("arq3_linha")),
 		          
 		          #Layout em flow para melhor justaposicao das opcoes
 		          flowLayout(
 		            
 		          #Selecao das variaveis na base income.arq3.eur
-		          varSelectInput("variaveis_europa", "Variáveis Europa", income.arq3.eur, multiple = FALSE),
+		          varSelectInput("variaveis_arq3", "Variáveis Europa", income.arq3, multiple = FALSE),
 		          
 		          #Selecao de cores
 		          selectInput('cor', label = 'Escolha uma cor:',
@@ -51,12 +51,12 @@ shinyUI(
 		          
 		          #Definindo o range do eixo x
 		          numericRangeInput(inputId = "x_lim", label = "Insira valor mínimo e máximo para eixo x:",
-		                            value = c(min(income.arq3.eur$Log.pib.real), max(income.arq3.eur$Log.pib.real))
+		                            value = c(min(income.arq3$pais.idx), max(income.arq3$pais.idx))
 		          ),
 		          
 		          #Definindo o range do eixo y
 		          numericRangeInput(inputId = "y_lim", label = "Insira valor mínimo e máximo para eixo y:",
-		                            value = c(min(income.arq3.eur$Log.pib.real), max(income.arq3.eur$Log.pib.real))
+		                            value = c(min(income.arq3$pais.idx), max(income.arq3$pais.idx))
 		          ),
 		          
 
