@@ -34,7 +34,7 @@ EXPLORATÓRIA DE DADOS", sendo que , através do uso da Linguagem "R",
 serão feitas diversas análises em uma "Base de PIB real por países,
 extraida do livro do Stock & Watson, apresentada em papaer do
 Acemoglu. - A análise visa, demonstrar o crescimento do PIB nos 3
-ultimos anos de 3 paises europeus e 3 paises da América do Sul.
+ultimos anos de 5 paises europeus e 5 paises da América do Sul.
 
 # Preparando o ambiente de análise
 
@@ -199,38 +199,78 @@ names(income)[c(1:2, 4:length(names(income)))] <- c("pais", "ano", "Log.pib.real
 ## Selecionando - variaveis
 
 Considerando o espaço amostral importado, para fins do trabalho será
-selecionado um evento contendo 3 (tres) países europeus e 3 paises da
-America do Sul, considerando os anos de 1990, 1995 e 2000.
+selecionado um evento contendo 5 (cinco) países europeus e 5 (cinco) paises da
+America do Sul, considerando os anos de  1995 e 2000.
 
 ```{r selecionando variáveis, echo = TRUE}
 
-income.arq1 <- income %>% dplyr::select(pais,ano,Log.pib.real,educ.adultos, fracao.pop.0_14,fracao.pop.15_19,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)
+income.arq1 <- income %>% dplyr::select(pais.idx, pais,ano,Log.pib.real,Log.populacao, educ.adultos, fracao.pop.0_14,fracao.pop.15_19,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais, idade.mediana, pais.idx)
 kable(head(income.arq1, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 ```
 
-## Selecionando - dados referentes aos anos de 1990, 1995 e 2000.
+## Selecionando - dados referentes aos anos 1995 e 2000.
 
-Com base na coluna ano, selecionar o movimento dos três últimos anos.
+Com base na coluna ano, selecionar o movimento dos dois últimos anos(1995 e 2000).
 
-```{r selecionando dados por ano, echo=TRUE}
-income.arq2 <- income.arq1  %>% dplyr::filter (ano =='1990'| ano =='1995' | ano =='2000')
-kable(head(income.arq2, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+```{r selecionando dados por ano 1995, echo=TRUE}
+income.arq2.1995 <- income.arq1  %>% dplyr::filter (ano =='1995')
+kable(head(income.arq2.1995, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 
 ```
 
-## Selecionando - dados referentes aos paises : Europeus = Italy, France, Germany / Am.Sul = Brazil, Argentina, Paraguay
+```{r selecionando dados por ano  2000, echo=TRUE}
+income.arq2.2000 <- income.arq1  %>% dplyr::filter (ano =='2000')
+kable(head(income.arq2.2000, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 
-Com base na coluna pais, selecionar os paises objetos da analise.
+```
 
-```{r selecionando dados por pais, echo=TRUE}
-income.arq3 <- income.arq2  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia')
+## Selecionando 1995/2000 + Paises Europa/America Suls 
+
+```{r selecionando anos 19952000, echo=TRUE}
+income.arq3 <- income.arq1  %>% dplyr::filter (ano =='1995'| ano=='2000' )
 kable(head(income.arq3, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 
-income.arq3.eur <- income.arq2  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany')
-kable(head(income.arq3.eur, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+```
 
-income.arq3.amsul <- income.arq2  %>% dplyr::filter (pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia')
-kable(head(income.arq3.amsul, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+```{r selecionando anos 19952000euam, echo=TRUE}
+income.arq3 <- income.arq3  %>% dplyr::filter (ano =='1995'| ano=='2000' )%>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia'| pais == 'Germany, West' | pais == 'Spain' | pais == 'Chile' | pais == 'Uruguay')
+kable(head(income.arq3, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+```
+
+## Selecionando 1995/2000 - dados referentes aos paises : Europeus = Italy, France, Germany, Germany.West, Spain / Am.Sul = Brazil, Argentina, Paraguay, Chile, Uruguay
+
+
+```{r selecionando dados por pais , echo=TRUE}
+income.arq3.1995 <- income.arq2.1995  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia'| pais == 'Germany, West' | pais == 'Spain' | pais == 'Chile' | pais == 'Uruguay')
+kable(head(income.arq3.1995, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+income.arq3.2000 <- income.arq2.2000  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia'| pais == 'Germany, West' | pais == 'Spain' | pais == 'Chile' | pais == 'Uruguay')
+kable(head(income.arq3.2000, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+```
+
+
+## Separando bases -eur  - 1995/2000 
+
+```{r selecionando dados por pais2, echo=TRUE}
+ 
+income.arq3.1995.eur <- income.arq3.1995  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais == 'Germany, West' | pais == 'Spain')
+kable(head(income.arq3.1995.eur , 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+income.arq3.2000.eur <- income.arq3.2000  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais == 'Germany, West' | pais == 'Spain')
+kable(head(income.arq3.2000.eur , 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+```
+
+## Separando bases Am.Sul - 1995/2000 
+
+```{r selecionando dados por pais3, echo=TRUE} 
+
+income.arq3.1995.amsul <- income.arq3.1995  %>% dplyr::filter (pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia'| pais == 'Chile' | pais == 'Uruguay' )
+kable(head(income.arq3.1995.amsul, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
+
+income.arq3.2000.amsul <- income.arq3.2000  %>% dplyr::filter (pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia'| pais == 'Chile' | pais == 'Uruguay' )
+kable(head(income.arq3.1995.amsul, 5), booktabs = TRUE) %>%  kable_styling(font_size = 10)
 
 ```
 
@@ -248,103 +288,368 @@ income.arq3 %>% dlookr::diagnose()  %>% kable()
 A partir do função diagnose é possível identificar o tipo de cada
 variável do espaço amostral, sendo:
 
--   pais - Variavel qualitativa
--   ano - variavel ordinal
--   log.pib.real - variavel continua
--   educ.adultos - variavel continua
--   fracao.pop.0_14 - variavel continua
--   fracao.pop.15_19 - variavel continua
--   fracao.pop.30_44 - variavel continua
--   fracao.pop.45_59 - variavel continua
--   fracao.pop.60_mais - variavel continua
+-   pais.idx           - Variavel ordinal 
+-   pais               - Variavel qualitativa  
+-   ano                - variavel ordinal
+-   log.pib.real       - variavel quantitativa continua
+-   log.populacao      - variavel quantitativa continua 
+-   educ.adultos       - variavel quantitativa continua
+-   fracao.pop.0_14    - variavel quantitativa continua
+-   fracao.pop.15_19   - variavel quantitativa continua
+-   fracao.pop.30_44   - variavel quantitativa continua
+-   fracao.pop.45_59   - variavel quantitativa continua
+-   fracao.pop.60_mais - variavel quantitativa continua
+-   idade mediana      - variavel quantitativa continua 
 
-## Análise descritiva
+
+## Análise descritiva - 1995 
 
 Considerando as variaveis continuas, vamos analisar a centralidade dos
 dados, bem como a presença de outliers. Será utilizada a função descr do
-pacote summarytools, para esta análise.
+pacote summarytools, para esta análise, considerando o dados referente ao ano de 1995.  
 
-```{r desc variavel pibrealeur, echo = TRUE, warning = FALSE, results='asis'}
-income.arq3.eur %>% dplyr::select(Log.pib.real) %>% summarytools::descr()
+```{r desc variavel pibreal1995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(Log.pib.real) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.38 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 9.14)
+e Mediana (Median =8.89), o que também remete a uma simetria entre os
+valores, sem a presença de outliers significativos. 
+
+
+```{r desc variavel logpop1995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(Log.populacao) %>% summarytools::descr()
 ```
 
 Com base o indicador skewness acima, em -0.48 e sabendo-se que valores
 de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
-um caso fracamente simétrico.
+um caso fracamente simetrico 
 
-Pode-se observar uma leve diferença entre o valor da media (Mean = 9.85)
-e Mediana (Median =9.88), o que também remete a uma simetria entre os
-valores europeus de PIB.
+Pode-se observar uma leve diferença entre o valor da media (Mean = 10.26)
+e Mediana (Median =10.57), o que também remete a uma simetria entre os
+valores, sem a presença de outliers signficativos.
 
-```{r desc variavel pibrealams, echo = TRUE, warning = FALSE, results='asis'}
-income.arq3.amsul %>% dplyr::select(Log.pib.real) %>% summarytools::descr()
+
+```{r desc variavel educad1995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(educ.adultos) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.24 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico 
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 6.55)
+e Mediana (Median =6.69), o que também remete a uma simetria entre os
+valores, sem a presença de outliers signficativos.
+
+
+```{r desc variavel fp0141995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(fracao.pop.0_14) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em 0.27 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico 
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.26)
+e Mediana (Median =0.26), o que também remete a uma simetria entre os
+valores, sem a presença de outliers. 
+
+
+```{r desc variavel fp15191995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(fracao.pop.15_19) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em 0.44 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.25)
+e Mediana (Median =0.24), o que também remete a uma simetria entre os
+valores, sem a presença de outliers significativos. 
+
+
+
+```{r desc variavel fp30441995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(fracao.pop.30_44) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.47 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.20)
+e Mediana (Median =0.20), o que também remete a uma simetria entre os
+valores, sem a presença de outliers.
+
+
+```{r desc variavel fp45591995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(fracao.pop.45_59) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.06 pode-se afirmar que a distribuição neste caso é normal. 
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.15)
+e Mediana (Median =0.16), o que também remete a uma simetria entre os
+valores, sem a presença de outliers significativos. 
+
+
+```{r desc variavel fp60m1995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(fracao.pop.60_mais) %>% summarytools::descr()
 ```
 
 Com base o indicador skewness acima, em -0.37 e sabendo-se que valores
 de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
-um caso fracamente simétrico, para os valores de PIB na America do Sul.
+um caso fracamente simetrico
 
-Pode-se observar uma leve diferença entre o valor da media (Mean = 8.55)
-e Mediana (Median = 8.74 ), o que também remete a uma simetria entre os
-valores de PIB na America do Sul.
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.15)
+e Mediana (Median =0.16), o que também remete a uma simetria entre os
+valores, sem a presença de outliers.
 
-```{r desc variavel fpopeur, echo = TRUE, warning = FALSE, results='asis'}
-income.arq3.eur %>% dplyr::select(fracao.pop.30_44) %>% summarytools::descr()
+
+```{r desc variavel idmed1995, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.1995 %>% dplyr::select(idade.mediana) %>% summarytools::descr()
 ```
 
-Com base o indicador skewness acima, em 0.41 e sabendo-se que valores de
-skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de um
-caso fracamente simétrico, para os valores de PIB na Europa, para a
-faixa de idade entre 30 e 44 anos.
+Com base o indicador skewness acima, em -0.27 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
 
-Pode-se observar tambem a igualdade entre os valores da media (Mean =
-0.21) e Mediana (Median = 0.21 ), demonstra a ausencia de outliers nos
-valores europeus para a faixa de populacao entre 30 e 44 anos.
+Pode-se observar uma diferença entre o valor da media (Mean = 29.89)
+e Mediana (Median =30.70), o que também remete a uma simetria entre os
+valores, sem a presença significativa de outliers.
 
-```{r desc variavel fpopams, echo = TRUE, warning = FALSE, results='asis'}
-income.arq3.amsul %>% dplyr::select(fracao.pop.30_44) %>% summarytools::descr()
+
+Conclusão : Para os dados analisados em 1995, de forma geral, os dados tendem a uma distribuição normal, sem a presença significativa de outliers 
+
+
+
+## Análise descritiva - 2000
+
+Considerando as variaveis continuas, vamos analisar a centralidade dos
+dados, bem como a presença de outliers. Será utilizada a função descr do
+pacote summarytools, para esta análise, considerando o dados referente ao ano de 2000.  
+
+```{r desc variavel pibreal2000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(Log.pib.real) %>% summarytools::descr()
 ```
 
-Com base o indicador skewness acima, em 0.72 e sabendo-se que valores de
-skew na faixa de 0.5 \< skew \< 1, podemos afirmar que trata-se de um
-caso assimetria moderada, para os valores de PIB na America do Sul, para
-a faixa de idade entre 30 e 44 anos.
+Com base o indicador skewness acima, em -0.72 e sabendo-se que valores
+de skew na faixa de 0.5 \< skew \< 1, podemos afirmar que trata-se de
+um caso assimetria moderada. 
 
-Pode-se observar tambem a divergencia entre os valores da media (Mean =
-0.18) e Mediana (Median = 0.19 ), demonstra a presença de valores
-outliers nos valores da America do Sul para a faixa de populacao entre
-30 e 44 anos.
+Pode-se observar uma leve diferença entre o valor da media (Mean = 9.28)
+e Mediana (Median = 9.24), o que também remete a uma simetria entre os
+valores, sem a presença de outliers significativos. 
 
-## Analisando a matriz de correlação - Grafico de scatter matrix
 
-```{r Correlacao de variaveis eu , echo = TRUE}
-kable(cor(income.arq3.eur %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)))
+```{r desc variavel logpop2000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(Log.populacao) %>% summarytools::descr()
 ```
 
-É possivel verificar que a faixa etária onde se concentra o maior indice
-de educacao de adultos esta entre 30 e 44 anos, para os paises europeus.
+Com base o indicador skewness acima, em -0.47 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico 
 
-Podemos a partir daí, contruir um scatterplot entre as variáveis
-educ.adultos e fracao.pop.30_44.
+Pode-se observar uma leve diferença entre o valor da media (Mean = 10.31)
+e Mediana (Median =10.58), o que também remete a uma simetria entre os
+valores, sem a presença de outliers signficativos.
 
-```{r analisando scatter entre variaveis mais correlacionadas , echo = TRUE, results='asis'}
-income.arq3.eur %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos, fracao.pop.30_44) %>% ggplot(aes(x=educ.adultos, y =fracao.pop.30_44)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+
+```{r desc variavel educad2000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(educ.adultos) %>% summarytools::descr()
 ```
 
-```{r Correlacao de variaveis am , echo = TRUE}
-kable(cor(income.arq3.amsul %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)))
+Com base o indicador skewness acima, em -0.18 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico 
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 6.96)
+e Mediana (Median =6.88), o que também remete a uma simetria entre os
+valores, sem a presença de outliers signficativos.
+
+
+```{r desc variavel fp0142000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(fracao.pop.0_14) %>% summarytools::descr()
 ```
 
-É possível verificar que a maior correlação entre a variavel
-educ.adultos para os paises da America do Sul se concentra na fração de
-populacao com idade superior a 60 anos (fracao.pop.60_mais)
+Com base o indicador skewness acima, em 0.35 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico 
 
-Podemos a partir daí, contruir um scatterplot entre as variáveis
-educ.adultos e fracao.pop.60_mais.
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.25)
+e Mediana (Median =0.25), o que também remete a uma simetria entre os
+valores, sem a presença de outliers. 
 
-```{r analisando scatter entre variaveis mais correlacionadas am , echo = TRUE, results='asis'}
-income.arq3.amsul %>% dplyr::filter(!is.na(educ.adultos)) %>% dplyr::select(educ.adultos, fracao.pop.30_44) %>% ggplot(aes(x=educ.adultos, y =fracao.pop.30_44)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+
+```{r desc variavel fp15192000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(fracao.pop.15_19) %>% summarytools::descr()
 ```
+
+Com base o indicador skewness acima, em -0.16 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.24)
+e Mediana (Median =0.25), o que também remete a uma simetria entre os
+valores, sem a presença de outliers significativos. 
+
+
+
+```{r desc variavel fp30442000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(fracao.pop.30_44) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.64 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.21)
+e Mediana (Median =0.22), o que também remete a uma simetria entre os
+valores, sem a presença de outliers.
+
+
+```{r desc variavel fp45592000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(fracao.pop.45_59) %>% summarytools::descr()
+```
+Com base o indicador skewness acima, em -0.12 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.15)
+e Mediana (Median =0.15), o que também remete a uma simetria entre os
+valores, sem a presença de outliers.
+
+
+
+```{r desc variavel fp60m2000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(fracao.pop.60_mais) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.28 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma leve diferença entre o valor da media (Mean = 0.15)
+e Mediana (Median =0.17), o que também remete a uma simetria entre os
+valores, sem a presença de outliers.
+
+
+```{r desc variavel idmed2000, echo = TRUE, warning = FALSE, results='asis'}
+income.arq3.2000 %>% dplyr::select(idade.mediana) %>% summarytools::descr()
+```
+
+Com base o indicador skewness acima, em -0.26 e sabendo-se que valores
+de skew na faixa de -0.5 \< skew \< 0.5, podemos afirmar que trata-se de
+um caso fracamente simetrico
+
+Pode-se observar uma diferença entre o valor da media (Mean = 30.86)
+e Mediana (Median =31.10), o que também remete a uma simetria entre os
+valores, sem a presença significativa de outliers.
+
+
+Conclusão : Para os dados analisados em 2000, de forma geral, os dados tendem a uma distribuição normal, sem a presença significativa de outlier. 
+
+
+
+
+
+
+## Analisando a matriz de correlação - Grafico de scatter matrix - 1995 
+
+
+```{r Correl1995 , echo = TRUE}
+kable(cor(income.arq3.1995 %>% dplyr::filter(!is.na(Log.pib.real) ) %>% dplyr::select(ano, Log.pib.real, Log.populacao, educ.adultos,fracao.pop.0_14, fracao.pop.15_19, fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais, idade.mediana)))
+```
+
+
+Na analise acima é possivel verificar maior correlação entre as seguintes variaveis: 
+
+- Log.pib.real x fracao.pop.30_44      = 0.87
+- log.pib.real x fracao.pop.45_59      = 0.87
+- log.pib.real x fracao.pop.60_mais    = 0.91
+- log.pib.real x idade.mediana         = 0.95
+- fracao.pop.60_mais x idade.mediana   = 0.98 
+
+
+## Analisando a matriz de correlação - Grafico de scatter matrix - 2000 
+
+
+```{r Correl2000 , echo = TRUE}
+kable(cor(income.arq3.2000 %>% dplyr::filter(!is.na(Log.pib.real) ) %>% dplyr::select(ano, Log.pib.real, Log.populacao, educ.adultos,fracao.pop.0_14, fracao.pop.15_19, fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais, idade.mediana)))
+```
+
+
+Na analise acima é possivel verificar maior correlação entre as seguintes variaveis: 
+
+- Log.pib.real x fracao.pop.30_44      = 0.87
+- log.pib.real x fracao.pop.45_59      = 0.87
+- log.pib.real x fracao.pop.60_mais    = 0.91
+- log.pib.real x idade.mediana         = 0.95
+- fracao.pop.60_mais x idade.mediana   = 0.97 
+
+
+Analisando Scatter - 1995
+
+```{r analisando scatter 1995 1 , echo = TRUE, results='asis'}
+income.arq3.1995 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, fracao.pop.30_44) %>% ggplot(aes(x=Log.pib.real, y =fracao.pop.30_44)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 1995 2 , echo = TRUE, results='asis'}
+income.arq3.1995 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, fracao.pop.45_59) %>% ggplot(aes(x=Log.pib.real, y =fracao.pop.45_59)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 1995 3 , echo = TRUE, results='asis'}
+income.arq3.1995 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, fracao.pop.60_mais) %>% ggplot(aes(x=Log.pib.real, y =fracao.pop.60_mais)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 1995 4 , echo = TRUE, results='asis'}
+income.arq3.1995 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, idade.mediana) %>% ggplot(aes(x=Log.pib.real, y =idade.mediana)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 1995 5 , echo = TRUE, results='asis'}
+income.arq3.1995 %>% dplyr::filter(!is.na(idade.mediana)) %>% dplyr::select(idade.mediana,fracao.pop.60_mais) %>% ggplot(aes(x=idade.mediana, y =fracao.pop.60_mais)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+
+Analisando Scatter - 2000
+
+```{r analisando scatter 2000 1 , echo = TRUE, results='asis'}
+income.arq3.2000 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, fracao.pop.30_44) %>% ggplot(aes(x=Log.pib.real, y =fracao.pop.30_44)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 2000 2 , echo = TRUE, results='asis'}
+income.arq3.2000 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, fracao.pop.45_59) %>% ggplot(aes(x=Log.pib.real, y =fracao.pop.45_59)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 2000 3 , echo = TRUE, results='asis'}
+income.arq3.2000 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, fracao.pop.60_mais) %>% ggplot(aes(x=Log.pib.real, y =fracao.pop.60_mais)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 2000 4 , echo = TRUE, results='asis'}
+income.arq3.2000 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real, idade.mediana) %>% ggplot(aes(x=Log.pib.real, y =idade.mediana)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+```{r analisando scatter 20005 , echo = TRUE, results='asis'}
+income.arq3.2000 %>% dplyr::filter(!is.na(idade.mediana)) %>% dplyr::select(idade.mediana,fracao.pop.60_mais) %>% ggplot(aes(x=idade.mediana, y =fracao.pop.60_mais)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + theme_classic()
+```
+
+
+
+
 
 ## Verificando distribuição normal
 
@@ -361,48 +666,68 @@ evento amostral considerado neste trabalho, observando a concentração de
 dados, bem como, a eventual presença de outliers.
 
 A escolha do numero de bins foi livre e considerando que os eventos
-amostrais avaliados até o momento tem um simetria moderada, a escolha de
-bins = 20 no histrograma, permitiu essa visiblidade. Também no gráfico,
-não observa-se a presença de outliers, confirmando o resultado das
+amostrais avaliados, valores de media/media e 1 e 3 quartil. 
+
+Até o momento tem um simetria moderada, Também no gráfico,
+não observa-se a presença significativa de outliers, confirmando o resultado das
 funções summarytools::descr(), executadas acima.
 
-```{r analisando hfpopeur visualmente , echo = TRUE, results='asis'}
-income.arq3.eur %>% dplyr::select(fracao.pop.30_44) %>% ggplot(aes(x=fracao.pop.30_44))+geom_histogram(aes(y = after_stat(density)) ,bins = 20, fill = 'lightblue') + xlab('Fracao Populacao-30/44') + ylab('Densidade de Frequência') + geom_vline(xintercept=c(median(income.arq3.eur$fracao.pop.30_44), mean(income.arq3.eur$fracao.pop.30_44))) + annotate("text", x=median(income.arq3.eur$fracao.pop.30_44) + 0.3, y=0.05, label="Mediana", angle=90) + annotate("text", x=mean(income.arq3.eur$fracao.pop.30_44) + 0.3, y=0.05, label="Média", angle=90) + theme_classic()
+histrograma - ano 1995 
+
+```{r hlpbr1995 , echo = TRUE}
+income.arq3.1995 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real) %>% ggplot(aes(x=Log.pib.real))+geom_histogram(aes(y = after_stat(density)) ,bins = 4, fill = 'lightblue') + xlab('Log.pib.real') + ylab('Densidade de Frequência') + geom_vline(xintercept=c(median(income.arq3.1995$Log.pib.real), mean(income.arq3.1995$Log.pib.real))) + annotate("text", x=median(income.arq3.1995$Log.pib.real) + 0.3, y=0.05, label="Mediana", angle=90) + annotate("text", x=mean(income.arq3.1995$Log.pib.real) + 0.3, y=0.05, label="Média", angle=90) + theme_classic()
 ```
 
-```{r analisando hfpopams visualmente , echo = TRUE, results='asis'}
-income.arq3.amsul %>% dplyr::select(fracao.pop.30_44) %>% ggplot(aes(x=fracao.pop.30_44))+geom_histogram(aes(y = after_stat(density)) ,bins = 20, fill = 'lightblue') + xlab('Fracao Populacao-30/44') + ylab('Densidade de Frequência') + geom_vline(xintercept=c(median(income.arq3.amsul$fracao.pop.30_44), mean(income.arq3.amsul$fracao.pop.30_44))) + annotate("text", x=median(income.arq3.eur$fracao.pop.30_44) + 0.3, y=0.05, label="Mediana", angle=90) + annotate("text", x=mean(income.arq3.amsul$fracao.pop.30_44) + 0.3, y=0.05, label="Média", angle=90) + theme_classic()
+histograma - ano 2000 
+
+```{r hlpbr2000 , echo = TRUE}
+income.arq3.2000 %>% dplyr::filter(!is.na(Log.pib.real)) %>% dplyr::select(Log.pib.real) %>% ggplot(aes(x=Log.pib.real))+geom_histogram(aes(y = after_stat(density)) ,bins = 3, fill = 'lightblue') + xlab('Log.pib.real') + ylab('Densidade de Frequência') + geom_vline(xintercept=c(median(income.arq3.2000$Log.pib.real), mean(income.arq3.2000$Log.pib.real))) + annotate("text", x=median(income.arq3.2000$Log.pib.real) + 0.3, y=0.05, label="Mediana", angle=90) + annotate("text", x=mean(income.arq3.2000$Log.pib.real) + 0.3, y=0.05, label="Média", angle=90) + theme_classic()
 ```
 
-## Criando um grafico Q-Q (qqplot)
+
+
+
+ 
+## Criando um grafico Q-Q (qqplot)  
+
+QQ-plot - 1995 
 
 ```{r qqeur , echo = TRUE}
-qqnorm ( income.arq3.eur$fracao.pop.30_44, pch = 1 , frame = FALSE )
-qqline (income.arq3.eur$fracao.pop.30_44)
+qqnorm ( income.arq3.1995$Log.pib.real, pch = 1 , frame = FALSE )
+qqline (income.arq3.1995$Log.pib.real)
 ```
 
+
+QQ-plot - 2000 
+
+
 ```{r qqams , echo = TRUE}
-qqnorm ( income.arq3.amsul$fracao.pop.30_44, pch = 1 , frame = FALSE )
-qqline (income.arq3.amsul$fracao.pop.30_44)
+qqnorm ( income.arq3.2000$Log.pib.real, pch = 1 , frame = FALSE )
+qqline (income.arq3.2000$Log.pib.real)
 
 ```
 
 ## Executando teste Shapiro-Wilk
 
+Shapiro - 1995 
+
 ```{r shapiro wilk eur, echo = FALSE}
-shapiro.test(income.arq3.eur$fracao.pop.30_44)
+shapiro.test(income.arq3.1995$Log.pib.real)
 
 ```
 
+Shapiro - 2000
+
 ```{r shapiro wilk ams, echo = FALSE}
-shapiro.test(income.arq3.amsul$fracao.pop.30_44)
+shapiro.test(income.arq3.2000$Log.pib.real)
 
 ```
 
 ## Conclusão
 
 ```         
-Os dados avaliados tanto para o evento formado pelos paises europeus, bem como, o evento formado pelos paises da America do Sul, observa-se a normalidade dos dados, observou-se na media e medianas com valores muito próximos, sem a presença de outliers. 
+Os dados avaliados tanto para o  ano de 1995 quanto para ano 2000, considerando paises da Europa e America do Sul, observa-se a normalidade dos dados, observou-se na media e medianas com valores muito próximos, sem a presença de outliers. 
+
 Também na análise dos graficos, seja de histrograma observa-se uma distribuição concentrada dos dados, com formato Gausseano e através dos gráficos de QQnorm e qqline do pacote ggppubr onde os valores estão próximos da reta, demonstrando também a normalidade dos dados. 
 ```
 
@@ -420,69 +745,96 @@ conclusões incorretas nas respectivas análises.
 Vamor utilizar a função freq do summaytools para determinar a completude
 das variáveis do banco:
 
+-   Variavel pais.idx possui uma completude de 100.000 %
 -   Variavel pais possui uma completude de 100.000 %
 -   Variavel ano possui uma completude de 100.000 %
--   Variavel dem_ind possui uma completude de 92.476 %
--   Variavel log.pib.real possui uma completude de 70.562 %
--   Variavel log.populacao possui uma completude de 87.801%
--   Variavel fracao.pop.0_14 possui uma completude de 92.622%
--   Variavel fracao.pop.0_14 possui uma completude de 92.622%
--   Variavel fracao.pop.15_19 possui uma completude de 92.622%
--   Variavel fracao.pop.30_44 possui uma completude de 92.622%
--   Variavel fracao.pop. 45_59 possui uma completude de 92.622%
--   Variavel fracao.pop. 60_mais possui uma completude de 92.622%
--   Variavel educ.adultos possui uma completude de 56.976%
--   Variavel idade.mediana possui uma completude de 88.678%
--   Variavel pais.idx possui uma completude de 100.000 %
+-   Variavel log.pib.real possui uma completude de 90.00 %
+-   Variavel log.populacao possui uma completude de 90.00%
+-   Variavel educ.adultos possui uma completude de 90.00%
+-   Variavel fracao.pop.0_14 possui uma completude de 90.00%
+-   Variavel fracao.pop.15_19 possui uma completude de 90.00%
+-   Variavel fracao.pop.30_44 possui uma completude de 90.00%
+-   Variavel fracao.pop. 45_59 possui uma completude de 90.00%
+-   Variavel fracao.pop. 60_mais possui uma completude de 90.00%
+-   Variavel idade.mediana possui uma completude de 90.00%
+
+
+
+
+```{r frequência paisidx , echo = TRUE}
+income.arq3 %>%  dplyr::select(pais.idx) %>% summarytools::freq()
+```
 
 ```{r frequência vp , echo = TRUE}
-income %>%  dplyr::select(pais) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(pais) %>% summarytools::freq()
 ```
 
 ```{r frequência ano , echo = TRUE}
-income %>%  dplyr::select(ano) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(ano) %>% summarytools::freq()
 ```
 
-```{r frequência dem , echo = TRUE}
-income %>%  dplyr::select(dem_ind) %>% summarytools::freq()
-```
 
 ```{r frequência pib , echo = TRUE}
-income %>%  dplyr::select(Log.pib.real) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(Log.pib.real) %>% summarytools::freq()
 ```
 
 ```{r frequência Lp , echo = TRUE}
-income %>%  dplyr::select(Log.populacao) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(Log.populacao) %>% summarytools::freq()
 ```
 
+
+```{r frequência edad , echo = TRUE}
+income.arq3 %>%  dplyr::select(educ.adultos) %>% summarytools::freq()
+```
+
+
 ```{r frequência fra14 , echo = TRUE}
-income %>%  dplyr::select(fracao.pop.0_14) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(fracao.pop.0_14) %>% summarytools::freq()
 ```
 
 ```{r frequência Lp19 , echo = TRUE}
-income %>%  dplyr::select(fracao.pop.15_19) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(fracao.pop.15_19) %>% summarytools::freq()
 ```
 
 ```{r frequência Lp44 , echo = TRUE}
-income %>%  dplyr::select(fracao.pop.30_44) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(fracao.pop.30_44) %>% summarytools::freq()
 ```
 
 ```{r frequência Lp59 , echo = TRUE}
-income %>%  dplyr::select(fracao.pop.45_59) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(fracao.pop.45_59) %>% summarytools::freq()
 ```
 
 ```{r frequência Lp60 , echo = TRUE}
-income %>%  dplyr::select(fracao.pop.60_mais) %>% summarytools::freq()
-```
-
-```{r frequência edad , echo = TRUE}
-income %>%  dplyr::select(educ.adultos) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(fracao.pop.60_mais) %>% summarytools::freq()
 ```
 
 ```{r frequência idmed , echo = TRUE}
-income %>%  dplyr::select(idade.mediana) %>% summarytools::freq()
+income.arq3 %>%  dplyr::select(idade.mediana) %>% summarytools::freq()
 ```
 
-```{r frequência paisidx , echo = TRUE}
-income %>%  dplyr::select(pais.idx) %>% summarytools::freq()
+## Imputando dados pelo Mice 
+
+```{r regressao linear1 , echo = TRUE}
+summary(lm(Log.pib.real ~ idade.mediana, data = income.arq3))
 ```
+
+
+```{r regressao linear2 , echo = TRUE}
+summary(lm(Log.pib.real ~ fracao.pop.60_mais, data = income.arq3))
+```
+
+
+```{r regressao linear3 , echo = TRUE}
+summary(lm(Log.pib.real ~ idade.mediana + fracao.pop.60_mais, data = income.arq3))
+```
+
+Considerando as regressões acima, o modelo que utiliza as  variaveis log.pib.real, idade.mediana e fracao.pop.60_mais é o mais satisfatório. 
+Dessa forma será feito a imput de dados conforme abaixo, utilizando o pacote mice. 
+
+
+```{r mice , echo = TRUE}
+imp <- mice(income.arq3 %>% dplyr::mutate(Log.pib.real = Log.pib.real, Log.populacao = Log.populacao, educ.adultos = educ.adultos, fracao.pop.0_14 = fracao.pop.0_14, fracao.pop.15_19 = fracao.pop.15_19,fracao.pop.30_44 = fracao.pop.30_44,fracao.pop.45_59 = fracao.pop.45_59,fracao.pop.60_mais = fracao.pop.60_mais, idade.mediana = idade.mediana), print = FALSE, m = 5, max.iter = 5 , seed = 512) 
+fit <- with(data = imp, exp = lm(Log.pib.real ~ fracao.pop.60_mais, data = income.arq3)) 
+est <- pool(fit)
+```
+
