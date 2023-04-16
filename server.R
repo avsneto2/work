@@ -29,7 +29,7 @@ shinyServer(function(input, output){
   
   #Atualizando o range do y quando uma variável é trocada
   update_ylim <- eventReactive(c(input$variaveis_arq3),{
-    if(length(input$variaveis_arq3) == 0) return(numericRangeInput(inputId = "y_lim", label = "Insira valor mínimo e máximo para eixo y:", value = c(min(income.arq3.$n), max(income.arq3.$n))))
+    if(length(input$variaveis_arq3) == 0) return(numericRangeInput(inputId = "y_lim", label = "Insira valor mínimo e máximo para eixo y:", value = c(min(income.arq3$n), max(income.arq3$n))))
     updateNumericRangeInput(inputId = "y_lim", value = c(min(income.arq3[,input$variaveis_arq3], na.rm = T), max(income.arq3[,input$variaveis_arq3], na.rm = T))) 
   })
   

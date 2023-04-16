@@ -34,13 +34,10 @@ names(income)[c(1:2, 4:length(names(income)))] <- c("pais", "ano", "Log.pib.real
 
 income.arq1 <- income %>% dplyr::select(pais,ano,Log.pib.real,educ.adultos, fracao.pop.0_14,fracao.pop.15_19,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)
 
-income.arq2 <- income.arq1  %>% dplyr::filter (ano =='1990'| ano =='1995' | ano =='2000')
+income.arq2 <- income.arq1  %>% dplyr::filter (ano =='2000')
 
-income.arq3 <- income.arq2  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany' | pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia')
+income.arq3 <- income.arq2  %>% dplyr::filter (pais =='Brazil' | pais == 'Argentina')
 
-income.arq3.eur <- income.arq2  %>% dplyr::filter (pais =='Italy'| pais =='France' | pais =='Germany')
-
-income.arq3.amsul <- income.arq2  %>% dplyr::filter (pais =='Brazil' | pais == 'Argentina' | pais == 'Bolivia')
 
 
 #Importando dados mais explorados na disciplina Análise Exploratórioa de Dados

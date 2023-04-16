@@ -34,13 +34,13 @@ shinyUI(
 		 tabPanel("Renda e Democracia - 1995/2000 - Europa/America Sul",
 		          p("Gráfico de linhas sob seleção de variáveis"),
 		          
-		          #Painel principa com plot de income.arq3 por linha
+		          #Painel principa com plot de income.arq3.eur por linha
 		          mainPanel(plotOutput("arq3_linha")),
 		          
 		          #Layout em flow para melhor justaposicao das opcoes
 		          flowLayout(
 		            
-		          #Selecao das variaveis na base income.arq3
+		          #Selecao das variaveis na base income.arq3.eur
 		          varSelectInput("variaveis_arq3", "Variáveis Europa", income.arq3, multiple = FALSE),
 		          
 		          #Selecao de cores
