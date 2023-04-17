@@ -23,7 +23,7 @@ shinyServer(function(input, output){
   plot_eur_reativo <- eventReactive(c(input$variaveis_arq3, input$cor, input$x_lim, input$y_lim),{
     
     #Plotando o gráfico com as definições do eixo x, de cores, etc.
-    ggplot(data = income.arq3, aes_string(x = "pais.idx", y = input$variaveis_arq3)) +
+    ggplot(data = income.arq3, aes_string(x = "n", y = input$variaveis_arq3)) +
         geom_line(color = input$cor) + ggplot2::xlim(input$x_lim) + ggplot2::ylim(input$y_lim) + theme_classic()
   })
   
@@ -39,7 +39,7 @@ shinyServer(function(input, output){
     #De modo a não introduzir limites ao eixo y, para uma variável que não é numérica
     if ((length(input$variaveis_arq3) == 0) | (!is.numeric(unlist(income.arq3[,input$variaveis_arq3][1]))))
       {
-        if((!is.numeric(unlist(income.arq3[,input$variaveis_arq3][1]))) & (length(input$variaveis_arq3) != 0)) return(ggplot(income.arq3, aes_string(x="pais.idx", y = input$variaveis_arq3)) + geom_line() + geom_line(color = input$cor)  + theme_classic())
+        if((!is.numeric(unlist(income.arq3[,input$variaveis_arq3][1]))) & (length(input$variaveis_arq3) != 0)) return(ggplot(income.arq3, aes_string(x="pais", y = input$variaveis_arq3)) + geom_line() + geom_line(color = input$cor)  + theme_classic())
         else return(ggplot(income.arq3, aes(x=n, y =n)) + geom_line() + geom_line(color = input$cor))
       }
       

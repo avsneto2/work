@@ -32,11 +32,11 @@ income <- readxl::read_excel("income_democracy.xlsx")
 
 names(income)[c(1:2, 4:length(names(income)))] <- c("pais", "ano", "Log.pib.real", "Log.populacao", "fracao.pop.0_14", "fracao.pop.15_19", "fracao.pop.30_44", "fracao.pop.45_59","fracao.pop.60_mais", "educ.adultos", "idade.mediana", "pais.idx")
 
-income.arq1 <- income %>% dplyr::select(pais,ano,Log.pib.real,educ.adultos, fracao.pop.0_14,fracao.pop.15_19,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)
+income.arq1 <- income %>% dplyr::select(pais.idx,pais,ano,Log.pib.real,educ.adultos, fracao.pop.0_14,fracao.pop.15_19,fracao.pop.30_44,fracao.pop.45_59,fracao.pop.60_mais)
 
 income.arq2 <- income.arq1  %>% dplyr::filter (ano =='2000')
 
-income.arq3 <- income.arq2  %>% dplyr::filter (pais =='Brazil' | pais == 'Argentina')
+income.arq3 <- income.arq2  %>% dplyr::filter (pais =='Brazil' | pais =='Argentina')
 
 
 

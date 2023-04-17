@@ -31,7 +31,7 @@ shinyUI(
               #Introduzindo a primeira página com sugestões de leitura 
               flowLayout(img(src='logo_infnet.png', align = "left", height = '100px', width = '100px'),
                includeMarkdown("introducao.Rmd"))),
-		 tabPanel("Renda e Democracia - 2000 - America Sul-Brasil/Argentina",
+		 tabPanel("Renda e Democracia - 1995/2000 - Europa/America Sul",
 		          p("Gráfico de linhas sob seleção de variáveis"),
 		          
 		          #Painel principa com plot de income.arq3 por linha
@@ -41,7 +41,7 @@ shinyUI(
 		          flowLayout(
 		            
 		          #Selecao das variaveis na base income.arq3
-		          varSelectInput("variaveis_arq3", "Variáveis", income.arq3, multiple = FALSE),
+		          varSelectInput("variaveis_arq3", "Variáveis Europa", income.arq3, multiple = FALSE),
 		          
 		          #Selecao de cores
 		          selectInput('cor', label = 'Escolha uma cor:',
