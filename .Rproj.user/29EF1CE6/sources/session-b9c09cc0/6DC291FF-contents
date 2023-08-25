@@ -1,0 +1,116 @@
+# Aula 4
+
+#### Geracao de numeros aleatorios ####
+
+random_numbers <- rnorm(5)
+print(random_numbers) 
+
+set.seed(42)
+random_numbers <- rnorm(5)  # Gera 5 números aleatórios de uma distribuição normal
+print(random_numbers)
+
+random_numbers <- runif(5)# gera 5 numeros aleatorios em uma ditribuicao entre 0 e 1
+print(random_numbers)
+
+set.seed(42)
+random_numbers <- runif(5)# gera 5 numeros aleatorios em uma ditribuicao entre 0 e 1
+print(random_numbers)
+
+#### Estudo de caso - US Arests ####
+library(stats)
+library(factoextra)
+library(corrplot)
+library(psych)
+library(ggplot2)
+
+#### comando Data(), carrega conjunto de dados já disponiveis na linguagem R 
+
+data("USArrests")
+head(USArrests,5 )
+summary(USArrests)
+plot(USArrests$UrbanPop, USArrests$Assault, main="Scatterplot of UrbanPop vs Assault", 
+     xlab="UrbanPop", ylab="Assault", pch=19, col="blue")
+
+ggplot(USArrests, aes(x = UrbanPop)) +
+  geom_point(aes(y = Murder, color = "Murder"), size = 3, alpha = 0.7) +
+  geom_point(aes(y = Assault, color = "Assault"), size = 3, alpha = 0.7) +
+  geom_point(aes(y = Rape, color = "Rape"), size = 3, alpha = 0.7) +
+  labs(title = "Gráfico de Dispersão: UrbanPop vs. Murder, Assault e Rape",
+       x = "UrbanPop",
+       y = "Taxa") +
+  scale_color_manual(values = c("Murder" = "red", "Assault" = "blue", "Rape" = "green"),
+                     labels = c("Murder", "Assault", "Rape")) +
+  theme_minimal()
+
+#### ATENÇÃO - ESTUDAR ESTE TRECHO - VIDE AULA 5 - 1:00hs
+
+help("data")
+
+data("USArrests")
+df <- scale(USArrests)
+df <- as.data.frame(df)
+head(df, 5)
+summary(df)
+ggplot(df, aes(x = UrbanPop)) +
+  geom_point(aes(y = Murder, color = "Murder"), size = 3, alpha = 0.7) +
+  geom_point(aes(y = Assault, color = "Assault"), size = 3, alpha = 0.7) +
+  geom_point(aes(y = Rape, color = "Rape"), size = 3, alpha = 0.7) +
+  labs(title = "Gráfico de Dispersão: UrbanPop vs. Murder, Assault e Rape",
+       x = "UrbanPop",
+       y = "Taxa") +
+  scale_color_manual(values = c("Murder" = "red", "Assault" = "blue", "Rape" = "green"),
+                     labels = c("Murder", "Assault", "Rape")) +
+  theme_minimal()
+corrplot(cor(df), order = "hclust")
+res.dist <- get_dist(df, method = "pearson")
+
+help("fviz_dist")
+
+      fviz_dist(res.dist, lab_size = 8)
+pairs.panels(df,
+             method = "pearson", # correlation method
+             hist.col = "#00AFBB",
+             density = TRUE, # show density plots
+             ellipses = TRUE # show correlation ellipses
+)
+
+fviz_nbclust(df, kmeans, method = "wss")
+fviz_nbclust(df, kmeans, method = "silhouette")
+fviz_nbclust(df, kmeans, method = "gat_stat")  #### não usar essa função. 
+
+set.seed(42)
+km.res <- kmeans(df, centers=4, iter.max = 100, nstart=100)
+aggregate(USArrests, by=list(cluster=km.res$cluster), mean)
+
+fviz_cluster(km.res,
+             data = df,
+             palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+             ellipse.type = "euclid",
+             star.plot = TRUE,
+             repel = TRUE,
+             ggtheme = theme_minimal()
+)
+
+k2 <- kmeans(df, centers = 2, nstart = 25)
+k3 <- kmeans(df, centers = 3, nstart = 25)
+k4 <- kmeans(df, centers = 4, nstart = 25)
+k5 <- kmeans(df, centers = 5, nstart = 25)
+
+# plots to compare
+p1 <- fviz_cluster(k2, geom = "point", data = df) + ggtitle("k = 2")
+p2 <- fviz_cluster(k3, geom = "point",  data = df) + ggtitle("k = 3")
+p3 <- fviz_cluster(k4, geom = "point",  data = df) + ggtitle("k = 4")
+p4 <- fviz_cluster(k5, geom = "point",  data = df) + ggtitle("k = 5")
+
+library(gridExtra)
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+
+km.res$cluster
+km.res$centers
+km.res$totss
+km.res$withinss
+km.res$tot.withinss
+km.res$betweenss
+km.res$size
+km.res$iter
+km.res$ifault
